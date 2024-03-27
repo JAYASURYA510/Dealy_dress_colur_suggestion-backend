@@ -1,0 +1,18 @@
+// Delete all user data
+
+  User.deleteMany({})
+  .then(() => {
+    console.log('All user data deleted');
+  })
+  .catch((err) => {
+    console.error('Error deleting user data', err);
+  });
+ 
+ 
+  Image.deleteMany({})
+  .then(() => {
+    console.log('All user data deleted');
+  })
+  .catch((err) => {
+    console.error('Error deleting user data', err);
+  });
