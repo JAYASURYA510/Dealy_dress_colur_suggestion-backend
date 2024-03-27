@@ -39,75 +39,6 @@ ConnectDb();
 
 
 
-const verifyuser = (req, res, next) =>{
-  const token = req.cookies.token;
-  if (!token) {
-    return res.json("Token is missing")
-  }else{
-    jwt.verify(token, process.env.SECTERT_KEY, (err,decode) =>{
-      if (err) {
-        return res.json("Error with token")
-      } else {
-        if (decode.role === "admin") {
-          next()
-        }else{
-          return res.json("not admin")
-        }
-      }
-    })
-  }
-}
-
-
-app.get('/dashboard', verifyuser , (req, res) =>{
-  res.json("Success")
-})
-
-const verifyToken = async (req, res, next) => {
-  try {
-    const token = req.cookies.token;
-    if (!token) {
-      return res.json({ status: false, message: "no token"});
-    }
-    const decoded = await jwt.verify(token, process.env.SECTERT_KEY);
-    next()
-  } catch (err) {
-    return res.json(err);
-  }
-};
-
-
-
-app.get("/verify",verifyToken,(req, res) =>{
-  return res.json({Status: true, message:"authorized"})
-});
-
-
-const authenticateToken = (req, res, next) => {
-  const token = req.cookies.token;
-
-  if (!token) {
-      return res.status(401).send('Access Denied');
-  }
-
-  jwt.verify(token, process.env.SECTERT_KEY, (err, user) => {
-      if (err) {
-          return res.status(403).send('Invalid token');
-      }
-      req.user = user;
-      next();
-  });
-};
-
-
-
-
-app.get('/verifys', authenticateToken, (req, res) => {
-  // Only verified users can access this route
-  res.send('Welcome to the suggestion page!');
-});
-
-
 
 // Signup route
 app.post('/signup', async (req, res) => {
@@ -241,6 +172,10 @@ app.post('/reset-password/:id/:token', (req, res) => {
   })
 });
 
+
+
+
+
 // Create a schema for the image collection
 
 
@@ -328,6 +263,79 @@ app.put('/images/clear', async (req, res) => {
     res.status(500).json({ error: 'An error occurred while clearing titles and descriptions from images' });
   }
 });
+
+
+const verifyuser = (req, res, next) =>{
+  const token = req.cookies.token;
+  if (!token) {
+    return res.json("Token is missing")
+  }else{
+    jwt.verify(token, process.env.SECTERT_KEY, (err,decode) =>{
+      if (err) {
+        return res.json("Error with token")
+      } else {
+        if (decode.role === "admin") {
+          next()
+        }else{
+          return res.json("not admin")
+        }
+      }
+    })
+  }
+}
+
+
+app.get('/dashboard', verifyuser , (req, res) =>{
+  res.json("Success")
+})
+
+const verifyToken = async (req, res, next) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) {
+      return res.json({ status: false, message: "no token"});
+    }
+    const decoded = await jwt.verify(token, process.env.SECTERT_KEY);
+    next()
+  } catch (err) {
+    return res.json(err);
+  }
+};
+
+
+
+app.get("/verify",verifyToken,(req, res) =>{
+  return res.json({Status: true, message:"authorized"})
+});
+
+
+const authenticateToken = (req, res, next) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+      return res.status(401).send('Access Denied');
+  }
+
+  jwt.verify(token, process.env.SECTERT_KEY, (err, user) => {
+      if (err) {
+          return res.status(403).send('Invalid token');
+      }
+      req.user = user;
+      next();
+  });
+};
+
+
+
+
+app.get('/verifys', authenticateToken, (req, res) => {
+  // Only verified users can access this route
+  res.send('Welcome to the suggestion page!');
+});
+
+
+
+
 
 
 app.get("/", async (req, res) => {
