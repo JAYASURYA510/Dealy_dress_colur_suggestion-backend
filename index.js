@@ -40,6 +40,33 @@ ConnectDb();
 
 
 
+const verifyuser = (req, res, next) =>{
+  const token = req.cookies.token;
+  if (!token) {
+    return res.json("Token is missing")
+  }else{
+    jwt.verify(token, process.env.SECTERT_KEY, (err,decode) =>{
+      if (err) {
+        return res.json("Error with token")
+      } else {
+        if (decode.role === "admin") {
+          next()
+        }else{
+          return res.json("not admin")
+        }
+      }
+    })
+  }
+}
+
+
+app.get('/dashboard', verifyuser , (req, res) =>{
+  res.json("Success")
+})
+
+
+
+
 // Signup route
 app.post('/signup', async (req, res) => {
   try {
@@ -264,30 +291,6 @@ app.put('/images/clear', async (req, res) => {
   }
 });
 
-
-const verifyuser = (req, res, next) =>{
-  const token = req.cookies.token;
-  if (!token) {
-    return res.json("Token is missing")
-  }else{
-    jwt.verify(token, process.env.SECTERT_KEY, (err,decode) =>{
-      if (err) {
-        return res.json("Error with token")
-      } else {
-        if (decode.role === "admin") {
-          next()
-        }else{
-          return res.json("not admin")
-        }
-      }
-    })
-  }
-}
-
-
-app.get('/dashboard', verifyuser , (req, res) =>{
-  res.json("Success")
-})
 
 const verifyToken = async (req, res, next) => {
   try {
