@@ -94,7 +94,7 @@ app.post('/login', async (req, res) => {
                        process.env.SECTERT_KEY, {expiresIn: '1d'} )
                        res.cookie('token', token)
     // Send the token in the response
-    res.status(200).json({ Status: "successful", role: user.role, token:token  });
+    res.status(200).json({ Status: "successful", role: user.role,   });
 
   } catch (error) {
     console.error({error:"Error during login:"});
